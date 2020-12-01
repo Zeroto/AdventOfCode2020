@@ -1,7 +1,7 @@
 ﻿open System
 
 let noop argv =
-  0
+  ""
 
 let days = [|
   ("day1", Day1.main, true)
@@ -37,13 +37,13 @@ let runDay name argv =
   | Some (_, program, _) ->
     Console.Clear()
     let stopwatch = Diagnostics.Stopwatch.StartNew()
-    let result = program (argv)
+    let result = program argv
     stopwatch.Stop();
-    printfn "Time elapsed: %dms" stopwatch.ElapsedMilliseconds
-    result
+    printfn "result: %A, Time elapsed: %O" result stopwatch.Elapsed
+    0
   | None ->
     printfn "Invalid day"
-    0
+    -1
 
 let readInputArguments () =
   let rec read acc =

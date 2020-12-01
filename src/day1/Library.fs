@@ -16,27 +16,27 @@ let main (argv: string array) =
 
   match argv.[0] with
   | "a" ->
-    input
-    |> Array.pick
-        (fun (i, v) ->
-          input.[i+1..]
-          |> Array.tryFind (fun (_, s) -> v+s = 2020)
-          |> Option.map (fun (_, s) -> v*s)
-        )
-    |> printfn "result: %d"
-    0
+    let result =
+      input
+      |> Array.pick
+          (fun (i, v) ->
+            input.[i+1..]
+            |> Array.tryFind (fun (_, s) -> v+s = 2020)
+            |> Option.map (fun (_, s) -> v*s)
+          )
+    string result
   | "b" ->
-    input
-    |> Array.pick
-        (fun (i, a) ->
-          input.[i+1..]
-          |> Array.tryPick
-            (fun (i, b) ->
-              input.[i+1..]
-              |> Array.tryFind (fun (_, c) -> a+b+c = 2020)
-              |> Option.map (fun (_, c) -> a*b*c)
-            )
-        )
-    |> printfn "result: %d"
-    0
-  | _ -> 0
+    let result =
+      input
+      |> Array.pick
+          (fun (i, a) ->
+            input.[i+1..]
+            |> Array.tryPick
+              (fun (i2, b) ->
+                input.[i2+1..]
+                |> Array.tryFind (fun (_, c) -> a+b+c = 2020)
+                |> Option.map (fun (_, c) -> a*b*c)
+              )
+          )
+    string result
+  | _ -> null
