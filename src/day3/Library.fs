@@ -55,10 +55,10 @@ let main (argv: string array) =
         (7,1)
         (1,2)
       ]
-      
+
     let result =
       slopes
-      |> List.map (fun (xs,ys) -> [0..ys..height-1] |> List.mapi (fun i y -> (i*xs, y)) |> getTreeCount |> int64)
+      |> List.map (fun (xs,ys) -> [0..ys..height-1] |> List.mapi (fun i y -> (i*xs, y)) |> List.tail |> getTreeCount |> int64)
       |> List.reduce (*)
 
     sprintf "%d" result
