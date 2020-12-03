@@ -48,17 +48,21 @@ let main (argv: string array) =
 
   match argv.[0] with
   | "a" ->
+    let sw = Diagnostics.Stopwatch.StartNew()
     let correctPasswords =
       input
       |> Array.filter checkPasswordA
       |> Array.length
+    sw.Stop()
 
-    sprintf "Total count correct: %A" correctPasswords 
+    sprintf "Total count correct: %A; elapsed: %A" correctPasswords sw.Elapsed
   | "b" ->
+    let sw = Diagnostics.Stopwatch.StartNew()
     let correctPasswords =
       input
       |> Array.filter checkPasswordB
       |> Array.length
-
-    sprintf "Total count correct: %A" correctPasswords 
+    sw.Stop()
+    
+    sprintf "Total count correct: %A; elapsed: %A" correctPasswords sw.Elapsed
   | _ -> "Incorrect part input"

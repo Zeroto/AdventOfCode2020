@@ -6,7 +6,7 @@ let noop argv =
 let days = [|
   ("day1", Day1.main, true)
   ("day2", Day2.main, true)
-  ("day3", noop, false)
+  ("day3", Day3.main, true)
   ("day4", noop, false)
   ("day5", noop, false)
   ("day6", noop, false)
