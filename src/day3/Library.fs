@@ -56,11 +56,12 @@ let main (argv: string array) =
         (1,2)
       ]
 
+    let slopeToPositions (xs,ys) =
+      [0..ys..height-1] |> List.mapi (fun i y -> (i*xs, y))
     let result =
       slopes
-      |> List.map (fun (xs,ys) -> [0..ys..height-1] |> List.mapi (fun i y -> (i*xs, y)) |> List.tail |> getTreeCount |> int64)
+      |> List.map (slopeToPositions >> List.tail >> getTreeCount >> int64)
       |> List.reduce (*)
 
     sprintf "%d" result
-      
   | _ -> "Invalid input"
