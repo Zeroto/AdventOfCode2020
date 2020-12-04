@@ -114,3 +114,4 @@ let main (argv: string array) =
     |> String.concat "\n"
     |> (fun s -> System.IO.File.WriteAllText("output.log",s))
     sprintf "Result: %d" (validPassports |> List.length)
+  | _ -> "Invalid part input"
