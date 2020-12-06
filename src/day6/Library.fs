@@ -25,9 +25,6 @@ let main (argv: string array) =
   | "b" ->
     let result =
       input
-      |> List.sumBy (fun g ->
-        let groupCount = g |> List.length
-        g |> Seq.concat |> Seq.countBy id |> Seq.filter (fun (_, v) -> v = groupCount) |> Seq.length)
+      |> List.sumBy (List.map (Set.ofSeq) >> List.reduce (Set.intersect) >> Seq.length)
     sprintf "Result: %d" result
   | _ -> "invalid part input"
-    
