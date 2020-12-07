@@ -6,7 +6,7 @@ open System.Text.RegularExpressions
 
 type Rule = {
   identifier: string
-  contents: (int * string) seq
+  contents: Map<string, int>
 }
 
 let inputRegex = Regex("""(?'identifier'\S+ \S+) bag[s]? contain (?:no other bags|(?:(?'value'\d+) (?'name'\S+ \S+) bag[s]?(?:, )?)+)\.$""")
@@ -20,7 +20,7 @@ let parseLine (s: string) =
 
     {
       identifier = identifier
-      contents = Seq.zip values names
+      contents = Seq.zip names values |> Map.ofSeq
     }
 
 let parseInput = Array.map parseLine
@@ -37,7 +37,7 @@ let main (argv: string array) =
     let rec findContaining (found: Set<string>) s =
       let containingBags =
         input
-        |> Array.filter (fun r -> found |> Set.contains r.identifier |> not && r.contents |> Seq.exists (fun (_,name) -> name = s))
+        |> Array.filter (fun r -> found |> Set.contains r.identifier |> not && r.contents |> Map.containsKey s)
         |> Array.map (fun r -> r.identifier)
       if Seq.isEmpty containingBags then
         found
@@ -49,17 +49,10 @@ let main (argv: string array) =
     let result = findContaining Set.empty "shiny gold"
     sprintf "%d" (result |> Set.count)
   | "b" ->
-    let shinyBagRule = input |> Array.find (fun r -> r.identifier = "shiny gold")
-    let rec unfold (state: seq<int*string>) =
-      (0, state)
-      ||> Seq.fold 
-        (fun s (times, name) ->
-          match input |> Array.tryFind (fun r -> r.identifier = name) with
-          | Some r ->
-            let v = unfold r.contents
-            s + (times * (v+1))
-          | None -> 0)
+    let rec unfold (name: string) =
+      let rule = input |> Array.find (fun r -> r.identifier = name)
+      (0, rule.contents) ||> Seq.fold (fun s kv -> s + (kv.Value * (1 + unfold kv.Key)))
 
-    let result = unfold shinyBagRule.contents
+    let result = unfold "shiny gold"
     sprintf "%d" (result)
   | _ -> "Invalid Part input"
