@@ -28,6 +28,7 @@ let main (argv: string array) =
         )
     sprintf "Result: %d" check
   | "b" ->
+    let sw = System.Diagnostics.Stopwatch.StartNew()
     let target = 90433990L
     let rec findRangeSum start ``end`` sum =
       if sum = target then
@@ -43,5 +44,7 @@ let main (argv: string array) =
     let range =
       input.[s..e]
       |> Array.sort
-    sprintf "Results: %d" ((range |> Array.head) + (range |> Array.last))
+    
+    sw.Stop()
+    sprintf "Results: %d; elapsed: %O" ((range |> Array.head) + (range |> Array.last)) sw.Elapsed
   | _ -> "Invalid Part input"
