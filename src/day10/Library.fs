@@ -30,19 +30,15 @@ let main (argv: string array) =
     sprintf "Result: %d" result
   | "b" ->
     let countToPermCount i = Math.Max((Fibonacci (i+1)) - 1L, 1L)
-
     let max = input |> Array.max
     let input = input |> Array.append [|0; max + 3|] |> Array.sort |> Array.pairwise
-    let rec solver index product =
-      if index >= Array.length input then
-        product
-      else
-        let count =
-          input.[index..]
-          |> Array.findIndex (fun (a,b) -> b-a <> 1)
-          |> (+) 1
-        solver (index+count) (product * (countToPermCount count))
-    let result = solver 0 1L
-    sprintf "Result: %d" result
-      
+    let result =
+      ((1, 1L), input)
+      ||> Array.fold (fun (count, p) (a,b) -> 
+        if b-a = 1 then
+          (count + 1, p)
+        else
+          (1, p*(countToPermCount count))
+      )
+    sprintf "Result: %d" (snd result)
   | _ -> "Invalid Part input"
