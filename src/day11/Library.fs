@@ -28,7 +28,7 @@ let vectors = [
 ]
 
 let iterateBoardA width height (board: Tile list list) =
-  board
+  true, board
   |> List.mapi (fun y line -> 
     line |> List.mapi (fun x tile -> 
       let otherPositions =
@@ -55,33 +55,38 @@ let iterateBoardB width height (board: Tile list list) =
     let y = y + yd
     if x >= 0 && x < width && y >= 0 && y < height then
       let tile = board.[y].[x]
-      if tile = Empty then
+      match tile with
+      | Empty ->
         walkUntilSeat x y (xd,yd)
-      else
-        tile
+      | EmptySeat -> None
+      | FullSeat -> Some FullSeat
     else // outside map
-      EmptySeat
+      None 
 
-  board
-  |> List.mapi (fun y line -> 
-    line |> List.mapi (fun x tile -> 
-      let seatsTakenNearby =
-        vectors
-        |> List.map (walkUntilSeat x y)
-        |> List.filter (fun tile -> tile = FullSeat)
-        |> List.length
+  let mutable changed = false
+  let result =
+    board
+    |> List.mapi (fun y line -> 
+      line |> List.mapi (fun x tile -> 
+        let seatsTakenNearby =
+          vectors
+          |> List.choose (walkUntilSeat x y)
+          |> List.length
 
-      if tile = EmptySeat && seatsTakenNearby = 0 then
-        FullSeat
-      else if tile = FullSeat && seatsTakenNearby >= 5 then
-        EmptySeat
-      else tile
-    ) 
-  )
+        if tile = EmptySeat && seatsTakenNearby = 0 then
+          changed <- true
+          FullSeat
+        else if tile = FullSeat && seatsTakenNearby >= 5 then
+          changed <- true
+          EmptySeat
+        else tile
+      ) 
+    )
+  (changed, result)
 
 let rec iterateUntilUnchanged iterator board =
-  let newBoard = iterator board
-  if board = newBoard then
+  let changed, newBoard = iterator board
+  if not changed then
     board
   else
     iterateUntilUnchanged iterator newBoard
