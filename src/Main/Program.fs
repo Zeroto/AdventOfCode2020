@@ -18,7 +18,7 @@ let days = [|
   ("day12", Day12.main, true)
   ("day13", Day13.main, true)
   ("day14", Day14.main, true)
-  ("day15", noop, false)
+  ("day15", Day15.main, true)
   ("day16", noop, false)
   ("day17", noop, false)
   ("day18", noop, false)
